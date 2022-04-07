@@ -1,0 +1,19 @@
+[workspace]
+members=[
+    "merge-two-sorted-lists",
+    "linked-list-cycle",
+    "valid-anagram",
+    "ransom-note",
+    "first-unique-character-in-a-string",
+    "contains-duplicate",
+    "maximum-subarray",
+    "two-sum",
+    "merge-sorted-array",
+    "intersection-of-two-arrays-ii",
+    "best-time-to-buy-and-sell-stock",
+    "increasing-subsequences",
+    "reshape-the-matrix",
+    "pascals-triangle",
+    "valid-sudoku",
+    "set-matrix-zeroes"
+]
