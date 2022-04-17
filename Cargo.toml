@@ -1,5 +1,6 @@
 [workspace]
 members=[
+    "median-of-two-sorted-arrays",
     "merge-two-sorted-lists",
     "linked-list-cycle",
     "valid-anagram",
