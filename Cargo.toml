@@ -17,5 +17,6 @@ members=[
     "reshape-the-matrix",
     "pascals-triangle",
     "valid-sudoku",
-    "set-matrix-zeroes"
+    "set-matrix-zeroes",
+    "leetcode"
 ]
