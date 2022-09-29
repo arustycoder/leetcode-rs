@@ -1,9 +1,10 @@
-use crate::Solution;
+use crate::{ListNode, Solution};
 use std::collections::HashMap;
+
+#[allow(dead_code)]
 
 impl Solution {
     // 1480
-    #[allow(dead_code)]
     pub fn running_sum(nums: Vec<i32>) -> Vec<i32> {
         let mut last: Option<i32> = None;
         nums.into_iter()
@@ -76,6 +77,58 @@ impl Solution {
             end = i;
         }
         end == s.len() - 1
+    }
+
+    // =21=
+    pub fn merge_two_lists(
+        list1: Option<Box<ListNode>>,
+        list2: Option<Box<ListNode>>,
+    ) -> Option<Box<ListNode>> {
+        let (mut l1, mut l2) = (list1, list2);
+        let mut head = None;
+        let mut tail = &mut head;
+
+        while l1.is_some() || l2.is_some() {
+            if l1.is_some() && l2.is_some() {
+                let v1 = l1.as_ref().unwrap().val;
+                let v2 = l2.as_ref().unwrap().val;
+                if v1 < v2 {
+                    let next = l1.as_mut().unwrap().next.take();
+                    *tail = l1;
+                    l1 = next;
+                } else {
+                    let next = l2.as_mut().unwrap().next.take();
+                    *tail = l2;
+                    l2 = next;
+                }
+            } else if l1.is_some() {
+                let next = l1.as_mut().unwrap().next.take();
+                *tail = l1;
+                l1 = next;
+            } else {
+                let next = l2.as_mut().unwrap().next.take();
+                *tail = l2;
+                l2 = next;
+            }
+            tail = &mut tail.as_mut().unwrap().next;
+        }
+        head
+    }
+
+    // =206=
+    pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut tmp_head = Box::new(ListNode::new(0));
+        let mut origin = head;
+        while origin.is_some() {
+            let next = tmp_head.next.take();
+            let next1 = origin.as_mut().unwrap().next.take();
+
+            origin.as_mut().unwrap().next = next;
+            tmp_head.next = origin;
+
+            origin = next1;
+        }
+        tmp_head.next
     }
 }
 
