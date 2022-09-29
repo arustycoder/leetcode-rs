@@ -117,18 +117,19 @@ impl Solution {
 
     // =206=
     pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-        let mut tmp_head = Box::new(ListNode::new(0));
-        let mut origin = head;
-        while origin.is_some() {
-            let next = tmp_head.next.take();
-            let next1 = origin.as_mut().unwrap().next.take();
-
-            origin.as_mut().unwrap().next = next;
-            tmp_head.next = origin;
-
-            origin = next1;
+        // 1->2->3->4
+        // prev, cur 1->2->3->4
+        // prev 1 cur 2->3->4
+        // prev 2->1 cur 3->4
+        let mut prev = None;
+        let mut cur = head;
+        while cur.is_some() {
+            let temp = cur.as_mut().unwrap().next.take();
+            cur.as_mut().unwrap().next = prev;
+            prev = cur;
+            cur = temp;
         }
-        tmp_head.next
+        prev
     }
 }
 
