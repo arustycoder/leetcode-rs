@@ -131,6 +131,33 @@ impl Solution {
         }
         prev
     }
+
+    // =876=
+    pub fn middle_node(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut tmp = &head;
+        let mut len: usize = 0;
+        while tmp.is_some() {
+            len += 1;
+            tmp = &tmp.as_ref().unwrap().next;
+        }
+        let odd = len % 2 == 1;
+        let mut node = if odd { len / 2 + 1 } else { len / 2 };
+
+        let mut tmp = head;
+        while tmp.is_some() {
+            node -= 1;
+            if node == 0 {
+                return if odd {
+                    tmp
+                } else {
+                    tmp.as_mut().unwrap().next.take()
+                };
+            }
+            tmp = tmp.as_mut().unwrap().next.take();
+        }
+        // only for a empty linklist
+        tmp
+    }
 }
 
 #[cfg(test)]
