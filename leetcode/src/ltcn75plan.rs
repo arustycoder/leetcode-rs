@@ -1,5 +1,5 @@
 use crate::{ListNode, Solution};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[allow(dead_code)]
 
@@ -143,6 +143,43 @@ impl Solution {
         }
 
         slow.clone()
+    }
+
+    // =121=
+    pub fn max_profit(prices: Vec<i32>) -> i32 {
+        let mut min_price = i32::MAX;
+        let mut max = 0;
+
+        for x in prices {
+            if x - min_price > max {
+                max = x - min_price;
+            }
+            if x < min_price {
+                min_price = x;
+            }
+        }
+        max
+    }
+
+    // =409=
+    pub fn longest_palindrome(s: String) -> i32 {
+        // 1. 扫描每个字符，如果没出现就存入Set西
+        // 2. 存在，就移除，长度+2
+        // 3. set中还有，长度+1
+        // 4. 返回长度
+        let mut set = HashSet::new();
+        let mut len = 0;
+        for x in s.as_bytes() {
+            let p = set.insert(x);
+            if !p {
+                set.remove(x);
+                len += 2;
+            }
+        }
+        if !set.is_empty() {
+            len += 1;
+        }
+        len
     }
 }
 

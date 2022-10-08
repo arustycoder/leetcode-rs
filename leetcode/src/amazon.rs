@@ -86,4 +86,50 @@ impl Solution {
             l
         }
     }
+    // =5=
+    pub fn longest_palindrome_5(s: String) -> String {
+        // 1. 从头扫描每个字符
+        // 2. 计算该字符开始的最长回文字符串
+        // 3. 如果长度大于，则记录下标[s,e)
+        let pf = |s: &[u8]| {
+            let len = s.len();
+            let even = len % 2 == 0;
+            let mut i = 0;
+            let half = if even { len / 2 } else { len / 2 + 1 };
+            while i < half && s[i] == s[len - 1 - i] {
+                i += 1;
+            }
+            i == half
+        };
+        let mut max = (0, 0, 0);
+        for x in 0..s.len() {
+            for y in x + 1..s.len() {
+                let ss = &s[x..=y];
+                if pf(ss.as_bytes()) {
+                    let len = y - x + 1;
+                    if len > max.0 {
+                        max = (len, x, y);
+                    }
+                }
+            }
+        }
+        (&s[max.1..=max.2]).to_string()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Solution;
+
+    #[test]
+    fn it_works_5() {
+        let result = Solution::longest_palindrome_5("aba".to_string());
+        println!("{}", result);
+        let result = Solution::longest_palindrome_5("aa".to_string());
+        println!("{}", result);
+        let result = Solution::longest_palindrome_5("ab".to_string());
+        println!("{}", result);
+        let result = Solution::longest_palindrome_5("babad".to_string());
+        println!("{}", result);
+    }
 }
