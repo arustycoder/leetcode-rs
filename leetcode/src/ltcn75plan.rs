@@ -1,5 +1,9 @@
-use crate::{ListNode, Solution};
-use std::collections::{HashMap, HashSet};
+use crate::{ListNode, Solution, TreeNode};
+use std::{
+    cell::RefCell,
+    collections::{HashMap, HashSet},
+    rc::Rc,
+};
 
 #[allow(dead_code)]
 
@@ -180,6 +184,26 @@ impl Solution {
             len += 1;
         }
         len
+    }
+
+    // =102=
+    fn helper(node: &Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<Vec<i32>>, level: usize) {
+        if let Some(node) = node.as_ref() {
+            if let Some(array) = res.get_mut(level) {
+                array.push(node.borrow().val);
+            } else {
+                let create = vec![node.borrow().val];
+                res.push(create);
+            }
+            res[level].push(node.borrow().val);
+            Self::helper(&node.borrow().left, res, level + 1);
+            Self::helper(&node.borrow().right, res, level + 1);
+        }
+    }
+    pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+        let mut res = vec![];
+        Self::helper(&root, &mut res, 0);
+        res
     }
 }
 
