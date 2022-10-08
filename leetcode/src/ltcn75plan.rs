@@ -1,4 +1,7 @@
 use crate::{ListNode, Solution, TreeNode};
+use std::borrow::Borrow;
+use std::collections::VecDeque;
+use std::ops::Deref;
 use std::{
     cell::RefCell,
     collections::{HashMap, HashSet},
@@ -187,22 +190,43 @@ impl Solution {
     }
 
     // =102=
-    fn helper(node: &Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<Vec<i32>>, level: usize) {
-        if let Some(node) = node.as_ref() {
+    pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+        // 1. level，current
+        // 2. next
+        let mut res = vec![];
+        let mut stack = VecDeque::new();
+        if let Some(root) = root {
+            stack.push_back(root);
+        } else {
+            return res;
+        }
+        let mut level = 0;
+        let mut current = 1;
+        let mut next = 0;
+        while let Some(node) = stack.pop_front() {
+            let mut node = node.borrow_mut();
             if let Some(array) = res.get_mut(level) {
-                array.push(node.borrow().val);
+                array.push(node.val);
             } else {
-                let create = vec![node.borrow().val];
+                let create = vec![node.val];
                 res.push(create);
             }
-            res[level].push(node.borrow().val);
-            Self::helper(&node.borrow().left, res, level + 1);
-            Self::helper(&node.borrow().right, res, level + 1);
+            if let Some(left) = node.left.take() {
+                stack.push_back(left);
+                next += 1;
+            }
+            if let Some(right) = node.right.take() {
+                stack.push_back(right);
+                next += 1;
+            }
+            current -= 1;
+            if current == 0 {
+                //next level
+                level += 1;
+                current = next;
+                next = 0;
+            }
         }
-    }
-    pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
-        let mut res = vec![];
-        Self::helper(&root, &mut res, 0);
         res
     }
 }
