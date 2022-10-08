@@ -1,10 +1,8 @@
 use crate::{ListNode, Solution, TreeNode};
-use std::borrow::Borrow;
-use std::collections::VecDeque;
-use std::ops::Deref;
 use std::{
     cell::RefCell,
-    collections::{HashMap, HashSet},
+    cmp::Ordering,
+    collections::{HashMap, HashSet, VecDeque},
     rc::Rc,
 };
 
@@ -228,6 +226,43 @@ impl Solution {
             }
         }
         res
+    }
+
+    // =704=
+    pub fn search(nums: Vec<i32>, target: i32) -> i32 {
+        let mut hi = nums.len() as i32;
+        let mut lo = 0;
+
+        while lo < hi {
+            let mid = lo + (hi - lo) / 2;
+            let num = nums[mid as usize];
+            match num.cmp(&target) {
+                Ordering::Equal => {
+                    return mid;
+                }
+                Ordering::Greater => hi = mid,
+                Ordering::Less => lo = mid + 1,
+            }
+        }
+        -1
+    }
+
+    // =278=
+    pub fn first_bad_version(&self, n: i32) -> i32 {
+        // 1. g g g b g g g b b b b
+        let is_bad_version = |version: i32| version < 3;
+
+        let mut lo = 1;
+        let mut hi = n;
+        while lo < hi {
+            let mid = lo + (hi - lo) / 2;
+            if is_bad_version(mid) {
+                hi = mid; // [lo, mid]
+            } else {
+                lo = mid + 1; //[mid+1, hi]
+            }
+        }
+        lo
     }
 }
 
