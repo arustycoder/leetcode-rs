@@ -311,6 +311,30 @@ impl Solution {
         }
         unreachable!()
     }
+
+    // =733=
+    fn helper(image: &mut Vec<Vec<i32>>, sr: i32, sc: i32, orig: i32, new: i32) {
+        if sr < 0 || sc < 0 {
+            return;
+        }
+        if let Some(r) = image.get_mut(sr as usize) {
+            if let Some(n) = r.get_mut(sc as usize) {
+                if n == &orig && n != &new {
+                    *n = new;
+                    Self::helper(image, sr - 1, sc, orig, new);
+                    Self::helper(image, sr + 1, sc, orig, new);
+                    Self::helper(image, sr, sc - 1, orig, new);
+                    Self::helper(image, sr, sc + 1, orig, new);
+                }
+            }
+        }
+    }
+    pub fn flood_fill(image: Vec<Vec<i32>>, sr: i32, sc: i32, color: i32) -> Vec<Vec<i32>> {
+        let mut image = image;
+        let orig = image[sr as usize][sc as usize];
+        Self::helper(&mut image, sr, sc, orig, color);
+        image
+    }
 }
 
 #[cfg(test)]
