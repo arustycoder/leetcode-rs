@@ -1,5 +1,4 @@
 use crate::{ListNode, Solution, TreeNode};
-use std::cell::Ref;
 use std::{
     cell::RefCell,
     cmp::Ordering,
@@ -268,52 +267,26 @@ impl Solution {
 
     // =98=
     pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-        let max_val = |root: Option<Rc<RefCell<TreeNode>>>| {
-            let mut max = i32::MIN;
-            let mut node = root;
-            node.as_ref()?;
-            while let Some(n) = node {
-                if n.borrow().val > max {
-                    max = n.borrow().val;
-                }
-                node = n.borrow().right.clone();
-            }
-            Some(max)
-        };
-        let min_val = |root: Option<Rc<RefCell<TreeNode>>>| {
-            let mut min = i32::MAX;
-            let mut node = root;
-            node.as_ref()?;
-            while let Some(n) = node {
-                if n.borrow().val < min {
-                    min = n.borrow().val;
-                }
-                node = n.borrow().left.clone();
-            }
-            Some(min)
-        };
+        let mut last = None;
+        let mut stack = VecDeque::new();
+        let mut root = root;
 
-        if let Some(node) = root {
-            let mut node = node.borrow_mut();
-            let right = node.right.take();
-            let left = node.left.take();
-            let val = node.val;
-            if let Some(r) = right.as_ref() {
-                let r_val = max_val(Some(r.clone())).unwrap();
-                if r_val <= val || !Self::is_valid_bst(right) {
+        while !stack.is_empty() || root.is_some() {
+            while let Some(node) = root {
+                root = node.borrow_mut().left.take();
+                stack.push_back(node);
+            }
+
+            let node = stack.pop_back().unwrap();
+            if let Some(last) = last {
+                if node.borrow().val <= last {
                     return false;
                 }
             }
-            if let Some(l) = left.as_ref() {
-                let l_val = min_val(Some(l.clone())).unwrap();
-                if l_val >= val || !Self::is_valid_bst(left) {
-                    return false;
-                }
-            }
-            true
-        } else {
-            true
+            last = Some(node.borrow().val);
+            root = node.borrow_mut().right.take();
         }
+        true
     }
 }
 
