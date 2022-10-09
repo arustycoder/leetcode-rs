@@ -288,6 +288,29 @@ impl Solution {
         }
         true
     }
+
+    // =235=
+    pub fn lowest_common_ancestor(
+        root: Option<Rc<RefCell<TreeNode>>>,
+        p: Option<Rc<RefCell<TreeNode>>>,
+        q: Option<Rc<RefCell<TreeNode>>>,
+    ) -> Option<Rc<RefCell<TreeNode>>> {
+        let mut root = root;
+        let p_val = p.unwrap().borrow().val;
+        let q_val = q.unwrap().borrow().val;
+
+        while let Some(node) = root {
+            let val = node.borrow().val;
+            if val > q_val && val > p_val {
+                root = node.borrow_mut().left.take();
+            } else if val < q_val && val < p_val {
+                root = node.borrow_mut().right.take();
+            } else {
+                return Some(node);
+            }
+        }
+        unreachable!()
+    }
 }
 
 #[cfg(test)]
