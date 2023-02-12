@@ -1,8 +1,8 @@
-use std::alloc::dealloc;
-use std::borrow::Borrow;
-use std::ops::{BitXor, Deref, DerefMut};
-use std::ptr::read_volatile;
-use std::task::Poll::Pending;
+
+
+
+
+
 
 // Definition for singly-linked list.
 #[derive(PartialEq, Eq, Clone, Debug)]
@@ -88,7 +88,7 @@ impl Solution {
         }
     }
 
-    fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    fn reverse_list(_head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
         None
     }
 }

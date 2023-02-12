@@ -113,7 +113,7 @@ impl Solution {
                 }
             }
         }
-        (&s[max.1..=max.2]).to_string()
+        s[max.1..=max.2].to_string()
     }
 }
 

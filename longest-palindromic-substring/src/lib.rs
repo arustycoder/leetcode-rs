@@ -9,7 +9,7 @@ impl Solution {
         let ss = s.as_bytes();
         let len = ss.len();
         let mut max = (0usize, 0usize);
-        for (i, c) in ss.iter().enumerate() {
+        for (i, _c) in ss.iter().enumerate() {
             if i == 0 || i == len - 1 {
                 continue;
             }

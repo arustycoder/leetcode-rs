@@ -3,7 +3,7 @@ struct Solution;
 impl Solution {
     #[allow(unused)]
     fn max_profit_time_consuming(prices: Vec<i32>) -> i32 {
-        if prices.len() == 0 {
+        if prices.is_empty() {
             return 0;
         }
         let mut highest = 0;

@@ -120,7 +120,7 @@ fn main() {
     let board = board
         .iter()
         .map(|s| {
-            s.into_iter()
+            s.iter()
                 .map(|c| c.chars().next().unwrap())
                 .collect::<Vec<_>>()
         })
@@ -141,7 +141,7 @@ fn main() {
     let board = board
         .iter()
         .map(|s| {
-            s.into_iter()
+            s.iter()
                 .map(|c| c.chars().next().unwrap())
                 .collect::<Vec<_>>()
         })
