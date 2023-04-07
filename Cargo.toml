@@ -18,5 +18,6 @@ members=[
     "pascals-triangle",
     "valid-sudoku",
     "set-matrix-zeroes",
-    "leetcode"
+    "leetcode",
+    "dice"
 ]
