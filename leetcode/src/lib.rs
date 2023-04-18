@@ -1,5 +1,6 @@
 mod amazon;
 mod ltcn75plan;
+mod problems;
 
 #[derive(Default, Debug)]
 struct Solution;
