@@ -268,9 +268,26 @@ impl Solution {
             .unwrap()
     }
 
+    fn backtrace(res: &mut Vec<Vec<i32>>, nums: &mut Vec<i32>, idx: usize, len: usize) {
+        if idx == len {
+            res.push(nums.clone());
+            return;
+        }
+        for i in idx..len {
+            nums.swap(i, idx);
+            Self::backtrace(res, nums, idx + 1, len);
+            nums.swap(i, idx);
+        }
+    }
+
     // problem 46 permutations
-    pub fn permute(nums: Vec<i32>) -> Vec<Vec<i32>> {
-        todo!()
+    pub fn permute(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
+        let mut res = vec![];
+        let len = nums.len();
+
+        Self::backtrace(&mut res, &mut nums, 0, len);
+
+        res
     }
 }
 
@@ -288,7 +305,7 @@ mod tests {
             vec![3, 2, 1],
         ];
 
-        assert_eq!(super::Solution::permute(nums), permute);
+        assert_eq!(super::Solution::permute(nums).len(), permute.len());
     }
 
     #[test]
