@@ -1,5 +1,8 @@
-use crate::Solution;
+use crate::{Solution, TreeNode};
+use std::cell::RefCell;
 use std::cmp::Ordering;
+use std::collections::VecDeque;
+use std::rc::Rc;
 
 impl Solution {
     // problem 240: search-a-2d-matrix-ii
@@ -93,6 +96,7 @@ impl MyCircularQueue {
     }
 }
 
+#[allow(unused)]
 fn dfs(graph: &Vec<Vec<i32>>, x: i32, n: i32, res: &mut Vec<Vec<i32>>, stack: &mut Vec<i32>) {
     if x == n {
         res.push(stack.clone());
@@ -109,15 +113,73 @@ fn dfs(graph: &Vec<Vec<i32>>, x: i32, n: i32, res: &mut Vec<Vec<i32>>, stack: &m
 // problem 797 all-paths-from-source-to-target
 pub fn all_paths_source_target(graph: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     let mut ans = vec![];
-    let mut stack = vec![];
+    let mut queue = VecDeque::<Vec<i32>>::new();
+    let n = (graph.len() - 1) as i32;
 
-    stack.push(0);
-    dfs(&graph, 0, (graph.len() - 1) as i32, &mut ans, &mut stack);
+    graph[0].iter().for_each(|&n| queue.push_back(vec![0, n]));
+    while let Some(xx) = queue.pop_front() {
+        println!("{xx:?}");
+        if let Some(x) = xx.last() {
+            if x == &n {
+                ans.push(xx.clone());
+            } else {
+                for &y in &graph[*x as usize] {
+                    queue.push_back({
+                        let mut xx1 = xx.clone();
+                        xx1.push(y);
+                        xx1
+                    })
+                }
+            }
+        }
+    }
     ans
+}
+
+fn build_tree_inner(preorder: &[i32], inorder: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
+    let inorder_map = inorder
+        .iter()
+        .enumerate()
+        .map(|(i, v)| (*v, i))
+        .collect::<std::collections::HashMap<_, _>>();
+
+    let root_in_inorder = |x: &i32| *inorder_map.get(x).unwrap();
+
+    if let Some(&val) = preorder.first() {
+        let mut root = TreeNode::new(val);
+        println!("{preorder:?} {inorder:?}");
+        // index is the root
+        let index = root_in_inorder(&val);
+        let left_inorder = &inorder[0..index];
+        let right_inorder = &inorder[index + 1..];
+
+        // the count of left tree is index-1
+        let left_preorder = &preorder[1..index + 1];
+        let right_preorder = &preorder[index + 1..];
+
+        root.left = build_tree_inner(left_preorder, left_inorder);
+        root.right = build_tree_inner(right_preorder, right_inorder);
+
+        return Some(Rc::new(RefCell::new(root)));
+    }
+    None
+}
+
+// problem 105 construct-binary-tree-from-preorder-and-inorder-traversal
+pub fn build_tree(preoder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    build_tree_inner(&preoder, &inorder)
 }
 
 #[cfg(test)]
 mod tests {
+
+    #[test]
+    fn case105() {
+        let preorder = vec![3, 9, 20, 15, 7];
+        let inorder = vec![9, 3, 15, 20, 7];
+
+        assert!(super::build_tree(preorder, inorder).is_some());
+    }
 
     #[test]
     fn case797() {
