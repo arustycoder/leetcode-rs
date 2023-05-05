@@ -170,8 +170,160 @@ pub fn build_tree(preoder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tre
     build_tree_inner(&preoder, &inorder)
 }
 
+// problem 172 factorial-trailing-zeros
+#[allow(unused)]
+pub fn trailing_zeros_v1(n: i32) -> i32 {
+    let mut res = 0;
+    let mut s = 5;
+    while s <= n {
+        let mut i = s;
+        while i % 5 == 0 {
+            res += 1;
+            i /= 5;
+        }
+        s += 5;
+    }
+    res
+}
+
+#[allow(unused)]
+pub fn trailing_zeros(mut n: i32) -> i32 {
+    let mut ans = 0;
+    while n > 0 {
+        n /= 5;
+        ans += n;
+    }
+    ans
+}
+
+// problem 72 edit-distance
+pub fn min_distance(word1: String, word2: String) -> i32 {
+    // dp[i][j] word1(i) -> word2(j) minimal edit distance
+    let mut dp = vec![vec![0i32; word2.as_bytes().len() + 1]; word1.as_bytes().len() + 1];
+    for i in 1..=word2.as_bytes().len() {
+        dp[0][i] = dp[0][i - 1] + 1;
+    }
+    for i in 1..=word1.as_bytes().len() {
+        dp[i][0] = dp[i - 1][0] + 1;
+    }
+
+    for i in 1..=word1.as_bytes().len() {
+        for j in 1..=word2.as_bytes().len() {
+            let c1 = word1.as_bytes().get(i - 1).unwrap();
+            let c2 = word2.as_bytes().get(j - 1).unwrap();
+            dp[i][j] = if c1 == c2 {
+                dp[i - 1][j - 1]
+            } else {
+                // dp[i][j-1] word1 delete
+                // dp[i-1][j] word1 insert
+                // dp[i-1[j-1] replace word1 and word2 to same one
+                dp[i][j - 1].min(dp[i - 1][j]).min(dp[i - 1][j - 1]) + 1
+            };
+        }
+    }
+
+    *dp.last().unwrap().last().unwrap()
+}
+
+// problem 84 largest-rectangle-in-histogram
+// The-brutal-way, fix-height
+#[allow(unused)]
+pub fn largest_rectangle_area_v1(heights: Vec<i32>) -> i32 {
+    let mut max = -1;
+    let len = heights.len();
+    for (idx, h) in heights.iter().enumerate() {
+        // searching the largest area which including current height
+        let mut r = idx as i32 + 1;
+        let mut l = idx as i32 - 1;
+        while r < len as i32 && heights[r as usize] >= *h {
+            r += 1;
+        }
+        while l >= 0 && heights[l as usize] >= *h {
+            l -= 1;
+        }
+        let h_max = (r - l - 1) * h;
+        max = max.max(h_max);
+    }
+    max
+}
+
+// brutal-way, fix-width
+#[allow(unused)]
+pub fn largest_rectangle_area_v2(heights: Vec<i32>) -> i32 {
+    let mut max = heights[0];
+    let len = heights.len();
+    for w in 1..len as i32 {
+        for i in 0..=len as i32 - w {
+            // start from i, check the following w-1 elements
+            // find the minimal height
+            let min = &heights[i as usize..(i + w) as usize].iter().min().unwrap();
+            max = max.max(**min * w);
+        }
+    }
+    max
+}
+
+pub fn largest_rectangle_area(heights: Vec<i32>) -> i32 {
+    let mut left = vec![-1; heights.len()];
+    let mut stack = std::collections::VecDeque::new();
+    for (i, h) in heights.iter().enumerate() {
+        if let Some(v) = stack.back() {
+            match v.cmp(h) {
+                Ordering::Less => {
+                    stack.push_back(*h);
+                    left[i] =
+                }
+                Ordering::Equal => {
+                    //nothing to do
+                }
+                Ordering::Greater => {
+                    // calculate area size
+                }
+            }
+        } else {
+            stack.push_back(*i);
+            left[i] = -1;
+        }
+    }
+    max
+}
+
+// problem 85 maximal-rectangle
+#[allow(unused)]
+pub fn maximal_rectangle(_matrix: Vec<Vec<char>>) -> i32 {
+    todo!()
+}
+
 #[cfg(test)]
 mod tests {
+
+    #[test]
+    fn case84() {
+        let heights = vec![2, 1, 5, 6, 2, 3];
+        assert_eq!(super::largest_rectangle_area(heights), 10);
+    }
+
+    #[test]
+    fn case85() {
+        let matrix = vec![
+            vec!['1', '0', '1', '0', '0'],
+            vec!['1', '0', '1', '1', '1'],
+            vec!['1', '1', '1', '1', '1'],
+            vec!['1', '0', '0', '1', '0'],
+        ];
+        assert_eq!(super::maximal_rectangle(matrix), 6);
+    }
+    #[test]
+    fn case72() {
+        assert_eq!(super::min_distance("a".to_string(), "ba".to_string()), 1);
+    }
+
+    #[test]
+    fn case172() {
+        assert_eq!(super::trailing_zeros(3), 0);
+        assert_eq!(super::trailing_zeros(5), 1);
+        assert_eq!(super::trailing_zeros(0), 0);
+    }
 
     #[test]
     fn case105() {
